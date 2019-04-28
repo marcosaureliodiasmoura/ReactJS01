@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-function App() {
-  return (
+import GlobalStyle from './styles/global';
+
+const App = () => (
+  <Fragment>
+    <GlobalStyle />
     <div className="App">
-      <h1>Hello Mundo Perfeitoo!!</h1>
     </div>
-  );
-}
+  </Fragment>
+);
 
 export default App;
