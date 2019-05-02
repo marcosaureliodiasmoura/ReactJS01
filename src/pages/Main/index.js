@@ -19,6 +19,7 @@ export default class Main extends Component {
     repositories: []
   };
 
+  //Verifica no ciclo de vida se possui algum repositorio salvo e então aguarda e chama com await no getLocalRepositories()
   async componentDidMount() {
     this.setState({ loading: true });
 
@@ -62,47 +63,12 @@ export default class Main extends Component {
   getLocalRepositories = async () =>
     JSON.parse(await localStorage.getItem("@GitCompare:repositories")) || [];
 
-  handleRemoveRepository = async e => {
-    e.preventDefault();
-
-    this.setState({ loading: true });
-
-    const { repositoryInput, repositories } = this.state;
-
-    try {
-      const { data: repository } = await api.get(`/repos/${repositoryInput}`);
-
-      repository.last_commit = moment(repository.pushed_at).fromNow();
-
-      this.setState({
-        repositoryError: false,
-        repositoryInput: "",
-        repositories: [...repositories, repository]
-      });
-
-      const localRepositories = await this.getLocalRepositories();
-
-      await localStorage.setItem(
-        "@GitCompare:repositories",
-        JSON.stringify([...localRepositories, repository])
-      );
-    } catch (err) {
-      this.setState({ repositoryError: true });
-    } finally {
-      this.setState({ loading: false });
-    }
-  };
-
-  getLocalRepositories = async () =>
-    JSON.parse(await localStorage.getItem("@GitCompare:repositories")) || [];
-
   handleRemoveRepository = async id => {
     const { repositories } = this.state;
 
     const updatedRepositories = repositories.filter(
       repository => repository.id !== id
     );
-
     this.setState({ repositories: updatedRepositories });
 
     await localStorage.setItem(
